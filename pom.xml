@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gautam</groupId>
-	<artifactId>HotelBooking</artifactId>
+	<artifactId>GBooking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>HotelBooking</name>
+	<name>GBooking</name>
 	<description>Demo project for RESTful Web Service</description>
 
 	<properties>
