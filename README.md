@@ -46,22 +46,24 @@ You can manually set the server port in the application.properties file- server.
 ###### Note:- REST API part is on process
 Admin Login:- GET Request http://localhost:8090/admin/{id}/{password} <br/>
 Add Vendor:- POST Request http://localhost:8090/vendor <br/>
-Get Vendor:- GET Request http://localhost:8090/vendor/{id} <br/>
+Get Vendor:- GET Request http://localhost:8090/vendor/{vendorId} <br/>
 Add Hotel:- POST Request http://localhost:8090/hotel <br/>
-Get Hotel:- GET request http://localhost:8090/hotel/{id} <br/>
+Get Hotel:- GET request http://localhost:8090/hotel/{hotelId} <br/>
+Delete Hotel:- DELETE request http://localhost:8090/hotel/{hotelId} <br/>
+Remove Vendor from Hotel:- PUT request http://localhost:8090/hotel/removeVendor/{hotelId} <br/>
+Add Vendor to Hotel:- PUT request http://localhost:8090/hotel/addVendor/{hotelId} <br/>
 User SignUp:- POST Request http://localhost:8090/user <br/>
 User SignIn:- GET Request http://localhost:8090/user/{id}/{password}<br/>
 User Details with All Bookings:- GET Request http://localhost:8090/user/{id} <br/>
 Update User Name:- PUT Request http://localhost:8090/user/name/{id} <br/>
 Update User Password:- PUT Request http://localhost:8090/user/password/{id} <br/>
 Recharge User Wallet:- PUT Request http://localhost:8090/user/{id}/{amount} <br/>
-Add Booking to User:- PUT Request http://localhost:8090/user/{id} <br/>
 Search Hotel by Name Search Key:- GET request http://localhost:8090/hotel/name/{key} <br/>
 Search Hotel by Location Search Key:- GET request http://localhost:8090/hotel/location/{key} <br/>
-Book Hotel (amount debited from User Wallet):- POST Request http://localhost:8090/booking <br/>
+Book Hotel (amount debited from User Wallet):- PUT Request http://localhost:8090/booking/{userId} <br/>
 Get Booking:- GET Request http://localhost:8090/booking/{id} <br/>
-Update Booking (amount debited/credited from User Wallet):- PUT Request http://localhost:8090/booking/{id} <br/>
-Cancel Booking (amount credited to User Wallet):- DELETE Request http://localhost:8090/booking/{id} <br/>
+Update Booking (amount debited/credited from User Wallet):- PUT Request http://localhost:8090/booking/{userId}/{bookingId} <br/>
+Cancel Booking (amount credited to User Wallet):- DELETE Request http://localhost:8090/booking/{userId}/{bookingId}  <br/>
 
 # Logging using Log4j
 I have provided logging logic in LoggingExpect.java class i.e followed the Spring AOP concept for all the methods of DAO and Service class after throwing an exception on error level. <br/>
