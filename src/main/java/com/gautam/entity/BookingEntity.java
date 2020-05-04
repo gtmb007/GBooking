@@ -35,6 +35,9 @@ public class BookingEntity {
 	
 	@Column(name="booked_on")
 	private LocalDateTime bookedOn;
+	
+	@Column(name="amount")
+	private Double amount;
 
 	public Integer getBookingId() {
 		return bookingId;
@@ -90,6 +93,14 @@ public class BookingEntity {
 
 	public void setBookedOn(LocalDateTime bookedOn) {
 		this.bookedOn = bookedOn;
+	}
+
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 	
 }

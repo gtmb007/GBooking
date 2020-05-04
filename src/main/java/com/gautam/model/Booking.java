@@ -11,6 +11,7 @@ public class Booking {
 	private String vendorName;
 	private Integer noOfRooms;
 	private LocalDateTime bookedOn;
+	private Double amount;
 	
 	public Integer getBookingId() {
 		return bookingId;
@@ -53,6 +54,12 @@ public class Booking {
 	}
 	public void setBookedOn(LocalDateTime bookedOn) {
 		this.bookedOn = bookedOn;
+	}
+	public Double getAmount() {
+		return amount;
+	}
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 	
 }

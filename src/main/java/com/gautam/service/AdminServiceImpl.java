@@ -12,13 +12,6 @@ public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
 	private AdminDAO adminDAO;
-
-//	@Override
-//	public String addAdmin(String id, String password) throws Exception {
-//		String adminId=adminDAO.addAdmin(id, password);
-//		if(adminId==null) throw new Exception("Service.ADMIN_SIGNUP_FAILED");
-//		return adminId;
-//	}
 	
 	@Override
 	public String validateAdmin(String id, String password) throws Exception {

@@ -15,6 +15,9 @@ public class VendorEntity {
 	
 	@Column(name="vendor_name")
 	private String vendorName;
+	
+	@Column(name="promo_code")
+	private String promoCode;
 
 	public String getVendorId() {
 		return vendorId;
@@ -30,6 +33,14 @@ public class VendorEntity {
 
 	public void setVendorName(String vendorName) {
 		this.vendorName = vendorName;
+	}
+
+	public String getPromoCode() {
+		return promoCode;
+	}
+
+	public void setPromoCode(String promoCode) {
+		this.promoCode = promoCode;
 	}
 	
 }

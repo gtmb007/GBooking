@@ -29,6 +29,7 @@ public class UserDAOImpl implements UserDAO {
 			userEntity.setPassword(user.getPassword());
 			userEntity.setFirstName(user.getFirstName());
 			userEntity.setLastName(user.getLastName());
+			userEntity.setWalletBalance(0d);
 			userEntity.setBookings(new LinkedHashSet<BookingEntity>());
 			entityManager.persist(userEntity);
 			userId=userEntity.getUserId();
@@ -46,6 +47,7 @@ public class UserDAOImpl implements UserDAO {
 			user.setPassword(userEntity.getPassword());
 			user.setFirstName(userEntity.getFirstName());
 			user.setLastName(userEntity.getLastName());
+			user.setWalletBalance(userEntity.getWalletBalance());
 			Set<BookingEntity> bookingEntities=userEntity.getBookings();
 			Set<Booking> bookings=new LinkedHashSet<Booking>();
 			for(BookingEntity bookingEntity : bookingEntities) {
@@ -57,6 +59,7 @@ public class UserDAOImpl implements UserDAO {
 				booking.setVendorName(bookingEntity.getVendorName());
 				booking.setNoOfRooms(bookingEntity.getNoOfRooms());
 				booking.setBookedOn(bookingEntity.getBookedOn());
+				booking.setAmount(bookingEntity.getAmount());
 				bookings.add(booking);
 			}
 			user.setBookings(bookings);
@@ -85,6 +88,39 @@ public class UserDAOImpl implements UserDAO {
 			id=userEntity.getUserId();
 		}
 		return id;
+	}
+	
+	@Override
+	public Boolean rechargeWallet(String userId, Double amount) throws Exception {
+		UserEntity userEntity=entityManager.find(UserEntity.class, userId);
+		Boolean message=false;
+		if(userEntity!=null) {
+			userEntity.setWalletBalance(userEntity.getWalletBalance()+amount);
+			message=true;
+		}
+		return message;
+	}
+	
+	@Override
+	public Boolean payment(String userId, Double amount) throws Exception {
+		UserEntity userEntity=entityManager.find(UserEntity.class, userId);
+		Boolean message=false;
+		if(userEntity!=null && userEntity.getWalletBalance()>=amount) {
+			userEntity.setWalletBalance(userEntity.getWalletBalance()-amount);
+			message=true;
+		}
+		return message;
+	}
+	
+	@Override
+	public void addBooking(String userId, Integer bookingId) throws Exception {
+		UserEntity userEntity=entityManager.find(UserEntity.class, userId);
+		BookingEntity bookingEntity=entityManager.find(BookingEntity.class, bookingId);
+		if(userEntity!=null && bookingEntity!=null) {
+			Set<BookingEntity> bookingEntities=userEntity.getBookings();
+			bookingEntities.add(bookingEntity);
+			userEntity.setBookings(bookingEntities);
+		}
 	}
 
 }

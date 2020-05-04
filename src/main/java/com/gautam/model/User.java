@@ -8,6 +8,7 @@ public class User {
 	private String firstName;
 	private String lastName;
 	private String password;
+	private Double walletBalance;
 	private Set<Booking> bookings;
 	
 	public String getUserId() {
@@ -33,6 +34,12 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public Double getWalletBalance() {
+		return walletBalance;
+	}
+	public void setWalletBalance(Double walletBalance) {
+		this.walletBalance = walletBalance;
 	}
 	public Set<Booking> getBookings() {
 		return bookings;

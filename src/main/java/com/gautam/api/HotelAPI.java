@@ -21,6 +21,7 @@ import com.gautam.model.Hotel;
 import com.gautam.model.User;
 import com.gautam.model.Vendor;
 import com.gautam.service.AdminService;
+import com.gautam.service.BookingService;
 import com.gautam.service.HotelService;
 import com.gautam.service.UserService;
 
@@ -38,25 +39,16 @@ public class HotelAPI {
 	private UserService userService;
 	
 	@Autowired
-	private Environment environment;
+	private BookingService bookingService;
 	
-//	@PutMapping(value="/admin/{id}/{password}")
-//	public ResponseEntity<String> adminSignup(@PathVariable String id, @PathVariable String password) throws Exception {
-//		try {
-//			String adminId=adminService.addAdmin(id, password);
-//			String message=environment.getProperty("API.SIGNUP_SUCCESS")+adminId;
-//			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
-//			return response;
-//		} catch(Exception e) {
-//			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()), e);
-//		}
-//	}
+	@Autowired
+	private Environment environment;
 	
 	@GetMapping(value="/admin/{id}/{password}")
 	public ResponseEntity<String> adminLogin(@PathVariable String id, @PathVariable String password) throws Exception {
 		try {
 			String adminId=adminService.validateAdmin(id, password);
-			String message=environment.getProperty("API.LOGIN_SUCCESS")+adminId;
+			String message=environment.getProperty("API.ADMIN_LOGIN_SUCCESS")+adminId;
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.OK);
 			return response;
 		} catch(Exception e) {
@@ -64,11 +56,93 @@ public class HotelAPI {
 		}
 	}
 	
+	@PostMapping(value="/vendor")
+	public ResponseEntity<String> addVendor(@RequestBody Vendor vendor) throws Exception {
+		try {
+			String vendorId=hotelService.addVendor(vendor);
+			String message=environment.getProperty("API.VENDOR_ADDED")+vendorId;
+			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
+			return response;
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()), e);
+		}
+	}
+	
+	@GetMapping(value="/vendor/{vendorId}")
+	public ResponseEntity<Vendor> getVendor(@PathVariable String vendorId) throws Exception {
+		try {
+			Vendor vendor=hotelService.getVendor(vendorId);
+			ResponseEntity<Vendor> response=new ResponseEntity<Vendor>(vendor, HttpStatus.OK);
+			return response;
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, environment.getProperty(e.getMessage()), e);
+		}
+	}
+	
+	@PostMapping(value="/hotel")
+	public ResponseEntity<String> addHotel(@RequestBody Hotel hotel) throws Exception {
+		try {
+			String hotelId=hotelService.addHotel(hotel);
+			String message=environment.getProperty("API.HOTEL_ADDED")+hotelId;
+			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
+			return response;
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()), e);
+		}
+	}
+	
+	@GetMapping(value="/hotel/{hotelId}")
+	public ResponseEntity<Hotel> searchHotelById(@PathVariable String hotelId) throws Exception {
+		try {
+			Hotel hotel=hotelService.getHotel(hotelId);
+			ResponseEntity<Hotel> response=new ResponseEntity<Hotel>(hotel, HttpStatus.OK);
+			return response;
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, environment.getProperty(e.getMessage()), e);
+		}
+	}
+	
+	@DeleteMapping(value="/hotel/{hotelId}")
+	public ResponseEntity<String> removeHotel(@PathVariable String hotelId) throws Exception {
+		try {
+			hotelId=hotelService.removeHotel(hotelId);
+			String message=environment.getProperty("API.HOTEL_DELETED")+hotelId;
+			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
+			return response;
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()), e);
+		}
+	}
+	
+	@PutMapping(value="/hotel/removeVendor/{hotelId}")
+	public ResponseEntity<String> removeVendorToHotel(@PathVariable String hotelId, @RequestBody Vendor vendor) throws Exception {
+		try {
+			String vendorId=hotelService.removeVendorFromHotel(hotelId, vendor.getVendorId());
+			String message=environment.getProperty("API.VENDOR_REMOVED_FROM_HOTEL")+vendorId;
+			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
+			return response;
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()), e);
+		}
+	}
+	
+	@PutMapping(value="/hotel/addVendor/{hotelId}")
+	public ResponseEntity<String> addVendorToHotel(@PathVariable String hotelId, @RequestBody Vendor vendor) throws Exception {
+		try {
+			String vendorId=hotelService.addVendorToHotel(hotelId, vendor.getVendorId());
+			String message=environment.getProperty("API.VENDOR_ADDED_TO_HOTEL")+vendorId;
+			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
+			return response;
+		} catch(Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()), e);
+		}
+	}
+	
 	@PostMapping(value="/user")
 	public ResponseEntity<String> userSignup(@RequestBody User user) throws Exception {
 		try {
 			String userId=userService.addUser(user);
-			String message=environment.getProperty("API.SIGNUP_SUCCESS")+userId;
+			String message=environment.getProperty("API.USER_SIGNUP_SUCCESS")+userId;
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
 			return response;
 		} catch(Exception e) {
@@ -80,7 +154,7 @@ public class HotelAPI {
 	public ResponseEntity<String> userLogin(@PathVariable String id, @PathVariable String password) throws Exception {
 		try {
 			String userId=userService.validateUser(id, password);
-			String message=environment.getProperty("API.LOGIN_SUCCESS")+userId;
+			String message=environment.getProperty("API.USER_LOGIN_SUCCESS")+userId;
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.OK);
 			return response;
 		} catch(Exception e) {
@@ -103,7 +177,7 @@ public class HotelAPI {
 	public ResponseEntity<String> updateUserName(@PathVariable String id, @RequestBody User user) throws Exception {
 		try {
 			String userId=userService.updateUserName(id, user.getFirstName(), user.getLastName());
-			String message=environment.getProperty("API.USERNAME_UPDATION_SUCCESS")+userId;
+			String message=environment.getProperty("API.USER_NAME_UPDATED")+userId;
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
 			return response;
 		} catch(Exception e) {
@@ -115,7 +189,7 @@ public class HotelAPI {
 	public ResponseEntity<String> updatePassword(@PathVariable String id, @RequestBody User user) throws Exception {
 		try {
 			String userId=userService.updatePassword(id, user.getPassword());
-			String message=environment.getProperty("API.PASSWORD_UPDATION_SUCCESS")+userId;
+			String message=environment.getProperty("API.USER_PASSWORD_UPDATED")+userId;
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
 			return response;
 		} catch(Exception e) {
@@ -123,11 +197,11 @@ public class HotelAPI {
 		}
 	}
 	
-	@PostMapping(value="/hotel")
-	public ResponseEntity<String> addHotel(@RequestBody Hotel hotel) throws Exception {
+	@PutMapping(value="/user/{id}/{amount}")
+	public ResponseEntity<String> rechargeWallet(@PathVariable String id, @PathVariable Double amount) throws Exception {
 		try {
-			String hotelId=hotelService.addHotel(hotel);
-			String message=environment.getProperty("API.HOTEL_ADDED_SUCCESS")+hotelId;
+			userService.rechargeWallet(id, amount);
+			String message=environment.getProperty("API.WALLET_RECHARGE_SUCCESS");
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
 			return response;
 		} catch(Exception e) {
@@ -135,18 +209,7 @@ public class HotelAPI {
 		}
 	}
 	
-	@GetMapping(value="/hotel/id/{hotelId}")
-	public ResponseEntity<Hotel> searchHotelById(@PathVariable String hotelId) throws Exception {
-		try {
-			Hotel hotel=hotelService.searchHotelById(hotelId);
-			ResponseEntity<Hotel> response=new ResponseEntity<Hotel>(hotel, HttpStatus.OK);
-			return response;
-		} catch(Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, environment.getProperty(e.getMessage()), e);
-		}
-	}
-	
-	@GetMapping(value="/hotel/nameKey/{key}")
+	@GetMapping(value="/hotel/name/{key}")
 	public ResponseEntity<Set<Hotel>> searchHotelByNameKey(@PathVariable String key) throws Exception {
 		try {
 			Set<Hotel> hotels=hotelService.searchHotelByNameKey(key);
@@ -157,7 +220,7 @@ public class HotelAPI {
 		}
 	}
 	
-	@GetMapping(value="/hotel/locationKey/{key}")
+	@GetMapping(value="/hotel/location/{key}")
 	public ResponseEntity<Set<Hotel>> searchHotelByLocationKey(@PathVariable String key) throws Exception {
 		try {
 			Set<Hotel> hotels=hotelService.searchHotelByLocationKey(key);
@@ -168,22 +231,10 @@ public class HotelAPI {
 		}
 	}
 	
-	@PostMapping(value="/vendor")
-	public ResponseEntity<String> addVendor(@RequestBody Vendor vendor) throws Exception {
+	@PutMapping(value="/booking/{userId}")
+	public ResponseEntity<String> bookHotel(@PathVariable String userId, @RequestBody Booking booking) throws Exception {
 		try {
-			String vendorId=hotelService.addVendor(vendor);
-			String message=environment.getProperty("API.VENDOR_ADDED_SUCCESS")+vendorId;
-			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
-			return response;
-		} catch(Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()), e);
-		}
-	}
-	
-	@PostMapping(value="/booking")
-	public ResponseEntity<String> bookHotel(@RequestBody Booking booking) throws Exception {
-		try {
-			Integer bookingId=hotelService.bookHotel(booking.getHotelId(), booking.getVendorId(), booking.getNoOfRooms());
+			Integer bookingId=bookingService.bookHotel(userId, booking.getHotelId(), booking.getVendorId(), booking.getNoOfRooms());
 			String message=environment.getProperty("API.BOOKING_SUCCESS")+bookingId;
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
 			return response;
@@ -192,22 +243,11 @@ public class HotelAPI {
 		}
 	}
 	
-	@GetMapping(value="/booking/{bookingId}")
-	public ResponseEntity<Booking> getBooking(@PathVariable Integer bookingId) throws Exception {
+	@PutMapping(value="/booking/{userId}/{bookingId}")
+	public ResponseEntity<String> updateBooking(@PathVariable String userId, @PathVariable Integer bookingId, @RequestBody Booking booking) throws Exception {
 		try {
-			Booking booking=hotelService.getBooking(bookingId);
-			ResponseEntity<Booking> response=new ResponseEntity<Booking>(booking, HttpStatus.OK);
-			return response;
-		} catch(Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, environment.getProperty(e.getMessage()), e);
-		}
-	}
-	
-	@PutMapping(value="/booking/{bookingId}")
-	public ResponseEntity<String> updateHotel(@PathVariable Integer bookingId, @RequestBody Booking booking) throws Exception {
-		try {
-			Integer bId=hotelService.updateHotel(bookingId, booking.getNoOfRooms());
-			String message=environment.getProperty("API.BOOKING_UPDATED_SUCCESS")+bId;
+			Integer bId=bookingService.updateBooking(userId, bookingId, booking.getNoOfRooms());
+			String message=environment.getProperty("API.BOOKING_UPDATED")+bId;
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
 			return response;
 		} catch(Exception e) {
@@ -215,11 +255,11 @@ public class HotelAPI {
 		}
 	}
 	
-	@DeleteMapping(value="/booking/{bookingId}")
-	public ResponseEntity<String> cancelHotel(@PathVariable Integer bookingId) throws Exception {
+	@DeleteMapping(value="/booking/{userId}/{bookingId}")
+	public ResponseEntity<String> cancelBooking(@PathVariable String userId, @PathVariable Integer bookingId) throws Exception {
 		try {
-			Integer bId=hotelService.cancelHotel(bookingId);
-			String message=environment.getProperty("API.BOOKING_CANCELLED_SUCCESS")+bId;
+			Integer bId=bookingService.cancelBooking(userId, bookingId);
+			String message=environment.getProperty("API.BOOKING_CANCELLED")+bId;
 			ResponseEntity<String> response=new ResponseEntity<String>(message, HttpStatus.CREATED);
 			return response;
 		} catch(Exception e) {

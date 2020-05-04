@@ -25,6 +25,34 @@ public class HotelDAOImpl implements HotelDAO {
 	private EntityManager entityManager;
 	
 	@Override
+	public String addVendor(Vendor vendor) throws Exception {
+		VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendor.getVendorId());
+		String vendorId=null;
+		if(vendorEntity==null) {
+			vendorEntity=new VendorEntity();
+			vendorEntity.setVendorId(vendor.getVendorId());
+			vendorEntity.setVendorName(vendor.getVendorName());
+			vendorEntity.setPromoCode(vendor.getPromoCode());
+			entityManager.persist(vendorEntity);
+			vendorId=vendorEntity.getVendorId();
+		}
+		return vendorId;
+	}
+	
+	@Override
+	public Vendor getVendor(String vendorId) throws Exception {
+		VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendorId);
+		Vendor vendor=null;
+		if(vendorEntity!=null) {
+			vendor=new Vendor();
+			vendor.setVendorId(vendorEntity.getVendorId());
+			vendor.setVendorName(vendorEntity.getVendorName());
+			vendor.setPromoCode(vendorEntity.getPromoCode());
+		}
+		return vendor;
+	}
+	
+	@Override
 	public String addHotel(Hotel hotel) throws Exception {
 		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotel.getHotelId());
 		String hotelId=null;
@@ -51,7 +79,7 @@ public class HotelDAOImpl implements HotelDAO {
 	}
 	
 	@Override
-	public Hotel searchHotelById(String hotelId) throws Exception {
+	public Hotel getHotel(String hotelId) throws Exception {
 		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotelId);
 		Hotel hotel=null;
 		if(hotelEntity!=null) {
@@ -69,11 +97,52 @@ public class HotelDAOImpl implements HotelDAO {
 				Vendor vendor=new Vendor();
 				vendor.setVendorId(vendorEntity.getVendorId());
 				vendor.setVendorName(vendorEntity.getVendorName());
+				vendor.setPromoCode(vendorEntity.getPromoCode());
 				vendors.add(vendor);
 			}
 			hotel.setVendors(vendors);
 		}
 		return hotel;
+	}
+	
+	@Override
+	public String removeHotel(String hotelId) throws Exception {
+		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotelId);
+		String hId=null;
+		if(hotelEntity!=null) {
+			hotelEntity.setVendors(null);
+			entityManager.remove(hotelEntity);
+			hId=hotelEntity.getHotelId();
+		}
+		return hId;
+	}
+	
+	@Override
+	public String removeVendorFromHotel(String hotelId, String vendorId) throws Exception {
+		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotelId);
+		VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendorId);
+		String vId=null;
+		if(hotelEntity!=null && vendorEntity!=null) {
+			Set<VendorEntity> vendorEntities=hotelEntity.getVendors();
+			vendorEntities.remove(vendorEntity);
+			hotelEntity.setVendors(vendorEntities);
+			vId=vendorEntity.getVendorId();
+		}
+		return vId;
+	}
+	
+	@Override
+	public String addVendorToHotel(String hotelId, String vendorId) throws Exception {
+		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotelId);
+		VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendorId);
+		String vId=null;
+		if(hotelEntity!=null && vendorEntity!=null) {
+			Set<VendorEntity> vendorEntities=hotelEntity.getVendors();
+			vendorEntities.add(vendorEntity);
+			hotelEntity.setVendors(vendorEntities);
+			vId=vendorEntity.getVendorId();
+		}
+		return vId;
 	}
 	
 	@Override
@@ -98,6 +167,7 @@ public class HotelDAOImpl implements HotelDAO {
 				Vendor vendor=new Vendor();
 				vendor.setVendorId(vendorEntity.getVendorId());
 				vendor.setVendorName(vendorEntity.getVendorName());
+				vendor.setPromoCode(vendorEntity.getPromoCode());
 				vendors.add(vendor);
 			}
 			hotel.setVendors(vendors);
@@ -128,26 +198,13 @@ public class HotelDAOImpl implements HotelDAO {
 				Vendor vendor=new Vendor();
 				vendor.setVendorId(vendorEntity.getVendorId());
 				vendor.setVendorName(vendorEntity.getVendorName());
+				vendor.setPromoCode(vendorEntity.getPromoCode());
 				vendors.add(vendor);
 			}
 			hotel.setVendors(vendors);
 			hotels.add(hotel);
 		}
 		return hotels;
-	}
-	
-	@Override
-	public String addVendor(Vendor vendor) throws Exception {
-		VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendor.getVendorId());
-		String vendorId=null;
-		if(vendorEntity==null) {
-			vendorEntity=new VendorEntity();
-			vendorEntity.setVendorId(vendor.getVendorId());
-			vendorEntity.setVendorName(vendor.getVendorName());
-			entityManager.persist(vendorEntity);
-			vendorId=vendorEntity.getVendorId();
-		}
-		return vendorId;
 	}
 	
 	@Override
@@ -163,47 +220,57 @@ public class HotelDAOImpl implements HotelDAO {
 			booking.setVendorName(bookingEntity.getVendorName());
 			booking.setNoOfRooms(bookingEntity.getNoOfRooms());
 			booking.setBookedOn(bookingEntity.getBookedOn());
+			booking.setAmount(bookingEntity.getAmount());
 		}
 		return booking;
 	}
 	
 	@Override
-	public Integer bookHotel(String hotelId, String vendorId, Integer noOfRooms) throws Exception {
+	public Boolean validateBooking(String hotelId, String vendorId, Integer noOfRooms) throws Exception {
+		Boolean isValid=false;
 		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotelId);
-		Integer bookingId=null;
 		if(hotelEntity!=null && hotelEntity.getRoomsAvailable()>=noOfRooms) {
 			VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendorId);
 			if(vendorEntity!=null && hotelEntity.getVendors().contains(vendorEntity)) {
-				hotelEntity.setRoomsAvailable(hotelEntity.getRoomsAvailable()-noOfRooms);
-				BookingEntity bookingEntity=new BookingEntity();
-				bookingEntity.setHotelId(hotelEntity.getHotelId());
-				bookingEntity.setHotelName(hotelEntity.getHotelName());
-				bookingEntity.setNoOfRooms(noOfRooms);
-				bookingEntity.setVendorId(vendorEntity.getVendorId());
-				bookingEntity.setVendorName(vendorEntity.getVendorName());
-				bookingEntity.setBookedOn(LocalDateTime.now());
-				entityManager.persist(bookingEntity);
-				bookingId=bookingEntity.getBookingId();
+				isValid=true;
 			}
 		}
-		return bookingId;
+		return isValid;
 	}
 	
 	@Override
-	public Integer updateHotel(Integer bookingId, Integer noOfRooms) throws Exception {
+	public Integer bookHotel(String hotelId, String vendorId, Integer noOfRooms, Double amount) throws Exception {
+		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotelId);
+		VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendorId);
+		hotelEntity.setRoomsAvailable(hotelEntity.getRoomsAvailable()-noOfRooms);
+		BookingEntity bookingEntity=new BookingEntity();
+		bookingEntity.setHotelId(hotelEntity.getHotelId());
+		bookingEntity.setHotelName(hotelEntity.getHotelName());
+		bookingEntity.setNoOfRooms(noOfRooms);
+		bookingEntity.setVendorId(vendorEntity.getVendorId());
+		bookingEntity.setVendorName(vendorEntity.getVendorName());
+		bookingEntity.setBookedOn(LocalDateTime.now());
+		bookingEntity.setAmount(amount);
+		entityManager.persist(bookingEntity);
+		return bookingEntity.getBookingId();
+	}
+	
+	@Override
+	public Integer updateBooking(Integer bookingId, Integer noOfRooms, Double amount) throws Exception {
 		BookingEntity bookingEntity=entityManager.find(BookingEntity.class, bookingId);
 		Integer bId=null;
 		if(bookingEntity!=null) {
 			HotelEntity hotelEntity=entityManager.find(HotelEntity.class, bookingEntity.getHotelId());
 			hotelEntity.setRoomsAvailable(hotelEntity.getRoomsAvailable()+bookingEntity.getNoOfRooms()-noOfRooms);
 			bookingEntity.setNoOfRooms(noOfRooms);
+			bookingEntity.setAmount(amount);
 			bId=bookingEntity.getBookingId();
 		}
 		return bId;
 	}
 	
 	@Override
-	public Integer cancelHotel(Integer bookingId) throws Exception {
+	public Integer cancelBooking(Integer bookingId) throws Exception {
 		BookingEntity bookingEntity=entityManager.find(BookingEntity.class, bookingId);
 		Integer bId=null;
 		if(bookingEntity!=null) {

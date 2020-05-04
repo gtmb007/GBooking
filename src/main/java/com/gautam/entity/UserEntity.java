@@ -27,6 +27,9 @@ public class UserEntity {
 	@Column(name="password")
 	private String password;
 	
+	@Column(name="wallet_balance")
+	private Double walletBalance;
+	
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="user_id")
 	private Set<BookingEntity> bookings;
@@ -61,6 +64,14 @@ public class UserEntity {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Double getWalletBalance() {
+		return walletBalance;
+	}
+
+	public void setWalletBalance(Double walletBalance) {
+		this.walletBalance = walletBalance;
 	}
 
 	public Set<BookingEntity> getBookings() {

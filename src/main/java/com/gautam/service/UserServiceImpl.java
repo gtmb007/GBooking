@@ -48,5 +48,24 @@ public class UserServiceImpl implements UserService {
 		if(id==null) throw new Exception("Service.USERPASSWORD_UPDATION_FAILED");
 		return id;
 	}
+	
+	@Override
+	public Boolean rechargeWallet(String userId, Double amount) throws Exception {
+		Boolean message=userDAO.rechargeWallet(userId, amount);
+		if(!message) throw new Exception("Service.WALLET_RECHARGE_FAILED");
+		return message;
+	}
+	
+	@Override
+	public Boolean payment(String userId, Double amount) throws Exception {
+		Boolean message=userDAO.payment(userId, amount);
+		if(!message) throw new Exception("Service.PAYMENT_FAILED");
+		return message;
+	}
+	
+	@Override
+	public void addBooking(String userId, Integer bookingId) throws Exception {
+		userDAO.addBooking(userId, bookingId);
+	}
 
 }

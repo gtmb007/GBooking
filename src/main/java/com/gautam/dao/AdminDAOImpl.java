@@ -20,16 +20,6 @@ public class AdminDAOImpl implements AdminDAO {
 			put("gangaa", "ganga@1997");
 		}
 	};
-
-//	@Override
-//	public String addAdmin(String id, String password) throws Exception {
-//		String adminId=null;
-//		if(!admins.containsKey(id)) {
-//			admins.put(id, password);
-//			adminId=id;
-//		}
-//		return adminId;
-//	}
 	
 	@Override
 	public Boolean validateAdmin(String id, String password) throws Exception {
