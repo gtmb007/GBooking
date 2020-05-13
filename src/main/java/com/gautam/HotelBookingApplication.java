@@ -20,7 +20,7 @@ import com.gautam.service.HotelService;
 import com.gautam.service.UserService;
 
 @SpringBootApplication
-public class HotelBookingApplication implements CommandLineRunner {
+public class HotelBookingApplication  {
 
 	@Autowired
 	private HotelService hotelService;
@@ -43,17 +43,17 @@ public class HotelBookingApplication implements CommandLineRunner {
 		SpringApplication.run(HotelBookingApplication.class, args);
 	}
 	
-	@Override
-	public void run(String... args) throws Exception {
-		while(true) {
-			System.out.println("\nPlease Enter...\n1.) Admin Login\n2.) User Login\n0.) Exit");
-			int opt=sc.nextInt();
-			if(opt==0) return;
-			else if(opt==1) adminLogin();
-			else if(opt==2) userLogin();
-			else System.out.println("\n"+environment.getProperty("UI.INVALID_OPTION"));
-		}
-	}
+//	@Override
+//	public void run(String... args) throws Exception {
+//		while(true) {
+//			System.out.println("\nPlease Enter...\n1.) Admin Login\n2.) User Login\n0.) Exit");
+//			int opt=sc.nextInt();
+//			if(opt==0) return;
+//			else if(opt==1) adminLogin();
+//			else if(opt==2) userLogin();
+//			else System.out.println("\n"+environment.getProperty("UI.INVALID_OPTION"));
+//		}
+//	}
 	
 	public void adminLogin() {
 		System.out.print("\nEnter Admin Id: ");

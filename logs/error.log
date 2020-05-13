@@ -1008,3 +1008,110 @@ java.lang.Exception: Service.PAYMENT_FAILED
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1215) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
 	at com.gautam.HotelBookingApplication.main(HotelBookingApplication.java:43) [classes/:?]
+2020-May-10 15:23:21 PM [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+java.lang.IllegalStateException: Failed to execute CommandLineRunner
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:787) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:768) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:322) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1215) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at com.gautam.HotelBookingApplication.main(HotelBookingApplication.java:43) [classes/:?]
+Caused by: java.util.NoSuchElementException
+	at java.util.Scanner.throwFor(Scanner.java:862) ~[?:1.8.0_252]
+	at java.util.Scanner.next(Scanner.java:1485) ~[?:1.8.0_252]
+	at java.util.Scanner.nextInt(Scanner.java:2117) ~[?:1.8.0_252]
+	at java.util.Scanner.nextInt(Scanner.java:2076) ~[?:1.8.0_252]
+	at com.gautam.HotelBookingApplication.run(HotelBookingApplication.java:50) ~[classes/:?]
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:784) ~[spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	... 5 more
+2020-May-10 17:34:24 PM [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+java.lang.IllegalStateException: Failed to execute CommandLineRunner
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:787) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:768) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:322) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1215) [spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	at com.gautam.HotelBookingApplication.main(HotelBookingApplication.java:43) [classes/:?]
+Caused by: java.util.NoSuchElementException
+	at java.util.Scanner.throwFor(Scanner.java:862) ~[?:1.8.0_252]
+	at java.util.Scanner.next(Scanner.java:1485) ~[?:1.8.0_252]
+	at java.util.Scanner.nextInt(Scanner.java:2117) ~[?:1.8.0_252]
+	at java.util.Scanner.nextInt(Scanner.java:2076) ~[?:1.8.0_252]
+	at com.gautam.HotelBookingApplication.run(HotelBookingApplication.java:50) ~[classes/:?]
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:784) ~[spring-boot-2.2.6.RELEASE.jar:2.2.6.RELEASE]
+	... 5 more
+2020-05-10 17:36:46.987  INFO 3783 --- [main] c.g.HotelBookingApplication              : Starting HotelBookingApplication on gautam-HP-Notebook with PID 3783 (/home/gautam/Downloads/GBooking-master/target/classes started by gautam in /home/gautam/Downloads/GBooking-master)
+2020-05-10 17:36:47.018  INFO 3783 --- [main] c.g.HotelBookingApplication              : No active profile set, falling back to default profiles: default
+2020-05-10 17:36:48.424  INFO 3783 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2020-05-10 17:36:48.468  INFO 3783 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 26ms. Found 0 JPA repository interfaces.
+2020-05-10 17:36:49.821  INFO 3783 --- [main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8090 (http)
+2020-05-10 17:36:49.838  INFO 3783 --- [main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+2020-05-10 17:36:49.839  INFO 3783 --- [main] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-10 17:36:49.967  INFO 3783 --- [main] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+2020-05-10 17:36:49.967  INFO 3783 --- [main] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 2871 ms
+2020-05-10 17:36:50.302  INFO 3783 --- [main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2020-05-10 17:36:51.023  INFO 3783 --- [main] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2020-05-10 17:36:51.113  INFO 3783 --- [main] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-05-10 17:36:51.258  INFO 3783 --- [main] o.h.Version                              : HHH000412: Hibernate ORM core version 5.4.12.Final
+2020-05-10 17:36:51.538  INFO 3783 --- [main] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-05-10 17:36:51.774  INFO 3783 --- [main] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+2020-05-10 17:36:53.182  INFO 3783 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-05-10 17:36:53.194  INFO 3783 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-05-10 17:36:53.553  WARN 3783 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-05-10 17:36:53.944  INFO 3783 --- [main] o.s.s.c.ThreadPoolTaskExecutor           : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-10 17:36:54.911  INFO 3783 --- [main] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8090 (http) with context path ''
+2020-05-10 17:36:54.915  INFO 3783 --- [main] c.g.HotelBookingApplication              : Started HotelBookingApplication in 9.041 seconds (JVM running for 10.373)
+2020-05-10 17:38:45.313  INFO 3783 --- [SpringContextShutdownHook] o.s.s.c.ThreadPoolTaskExecutor           : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-10 17:38:45.314  INFO 3783 --- [SpringContextShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-05-10 17:38:45.319  INFO 3783 --- [SpringContextShutdownHook] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+2020-05-10 17:38:45.342  INFO 3783 --- [SpringContextShutdownHook] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+2020-05-10 17:41:46.777  INFO 3944 --- [main] c.g.HotelBookingApplication              : Starting HotelBookingApplication on gautam-HP-Notebook with PID 3944 (/home/gautam/Downloads/GBooking-master/target/classes started by gautam in /home/gautam/Downloads/GBooking-master)
+2020-05-10 17:41:46.792  INFO 3944 --- [main] c.g.HotelBookingApplication              : No active profile set, falling back to default profiles: default
+2020-05-10 17:41:47.954  INFO 3944 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2020-05-10 17:41:48.001  INFO 3944 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 29ms. Found 0 JPA repository interfaces.
+2020-05-10 17:41:49.574  INFO 3944 --- [main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8090 (http)
+2020-05-10 17:41:49.590  INFO 3944 --- [main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+2020-05-10 17:41:49.590  INFO 3944 --- [main] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-10 17:41:49.720  INFO 3944 --- [main] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+2020-05-10 17:41:49.720  INFO 3944 --- [main] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 2846 ms
+2020-05-10 17:41:50.016  INFO 3944 --- [main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2020-05-10 17:41:50.527  INFO 3944 --- [main] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2020-05-10 17:41:50.624  INFO 3944 --- [main] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-05-10 17:41:50.766  INFO 3944 --- [main] o.h.Version                              : HHH000412: Hibernate ORM core version 5.4.12.Final
+2020-05-10 17:41:51.053  INFO 3944 --- [main] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-05-10 17:41:51.269  INFO 3944 --- [main] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+2020-05-10 17:41:52.647  INFO 3944 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-05-10 17:41:52.658  INFO 3944 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-05-10 17:41:52.990  WARN 3944 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-05-10 17:41:53.373  INFO 3944 --- [main] o.s.s.c.ThreadPoolTaskExecutor           : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-10 17:41:54.106  INFO 3944 --- [main] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8090 (http) with context path ''
+2020-05-10 17:41:54.109  INFO 3944 --- [main] c.g.HotelBookingApplication              : Started HotelBookingApplication in 8.103 seconds (JVM running for 9.08)
+2020-05-10 17:43:56.669  INFO 3944 --- [SpringContextShutdownHook] o.s.s.c.ThreadPoolTaskExecutor           : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-10 17:43:56.671  INFO 3944 --- [SpringContextShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-05-10 17:43:56.683  INFO 3944 --- [SpringContextShutdownHook] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+2020-05-10 17:43:56.725  INFO 3944 --- [SpringContextShutdownHook] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+2020-05-13 12:14:29.619  INFO 4719 --- [main] c.g.HotelBookingApplication              : Starting HotelBookingApplication on gautam-HP-Notebook with PID 4719 (/home/gautam/Downloads/GBooking-master/target/classes started by gautam in /home/gautam/Downloads/GBooking-master)
+2020-05-13 12:14:29.788  INFO 4719 --- [main] c.g.HotelBookingApplication              : No active profile set, falling back to default profiles: default
+2020-05-13 12:14:33.262  INFO 4719 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2020-05-13 12:14:33.352  INFO 4719 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 47ms. Found 0 JPA repository interfaces.
+2020-05-13 12:14:35.335  INFO 4719 --- [main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8090 (http)
+2020-05-13 12:14:35.381  INFO 4719 --- [main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+2020-05-13 12:14:35.382  INFO 4719 --- [main] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-13 12:14:35.611  INFO 4719 --- [main] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+2020-05-13 12:14:35.611  INFO 4719 --- [main] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 5631 ms
+2020-05-13 12:14:36.272  INFO 4719 --- [main] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2020-05-13 12:14:38.128  INFO 4719 --- [main] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2020-05-13 12:14:38.329  INFO 4719 --- [main] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-05-13 12:14:38.739  INFO 4719 --- [main] o.h.Version                              : HHH000412: Hibernate ORM core version 5.4.12.Final
+2020-05-13 12:14:39.276  INFO 4719 --- [main] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-05-13 12:14:39.706  INFO 4719 --- [main] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+2020-05-13 12:14:41.425  INFO 4719 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-05-13 12:14:41.436  INFO 4719 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-05-13 12:14:41.866  WARN 4719 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-05-13 12:14:42.483  INFO 4719 --- [main] o.s.s.c.ThreadPoolTaskExecutor           : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 12:14:43.363  INFO 4719 --- [main] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8090 (http) with context path ''
+2020-05-13 12:14:43.368  INFO 4719 --- [main] c.g.HotelBookingApplication              : Started HotelBookingApplication in 16.415 seconds (JVM running for 19.855)
+2020-05-13 12:14:51.056  INFO 4719 --- [SpringContextShutdownHook] o.s.s.c.ThreadPoolTaskExecutor           : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-13 12:14:51.063  INFO 4719 --- [SpringContextShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-05-13 12:14:51.072  INFO 4719 --- [SpringContextShutdownHook] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+2020-05-13 12:14:51.092  INFO 4719 --- [SpringContextShutdownHook] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
