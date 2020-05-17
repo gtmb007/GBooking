@@ -1,9 +1,13 @@
 package com.gautam.dao;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -12,9 +16,11 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import com.gautam.entity.BookingEntity;
+import com.gautam.entity.CustomerEntity;
 import com.gautam.entity.HotelEntity;
 import com.gautam.entity.VendorEntity;
 import com.gautam.model.Booking;
+import com.gautam.model.Customer;
 import com.gautam.model.Hotel;
 import com.gautam.model.Vendor;
 
@@ -63,7 +69,8 @@ public class HotelDAOImpl implements HotelDAO {
 			hotelEntity.setHotelStatus(hotel.getHotelStatus());
 			hotelEntity.setLocation(hotel.getLocation());
 			hotelEntity.setRoomCharge(hotel.getRoomCharge());
-			hotelEntity.setRoomsAvailable(hotel.getRoomsAvailable());
+			hotelEntity.setTotalRooms(hotel.getTotalRooms());
+			hotelEntity.setRoomMap(hotel.getRoomMap());
 			hotelEntity.setAmenities(hotel.getAmenities());
 			Set<Vendor> vendors=hotel.getVendors();
 			Set<VendorEntity> vendorEntities=new LinkedHashSet<VendorEntity>();
@@ -88,7 +95,13 @@ public class HotelDAOImpl implements HotelDAO {
 			hotel.setHotelName(hotelEntity.getHotelName());
 			hotel.setLocation(hotelEntity.getLocation());
 			hotel.setRoomCharge(hotelEntity.getRoomCharge());
-			hotel.setRoomsAvailable(hotelEntity.getRoomsAvailable());
+			hotel.setTotalRooms(hotelEntity.getTotalRooms());
+			Map<LocalDate, Integer> roomMap1=hotelEntity.getRoomMap();
+			Map<LocalDate, Integer> roomMap=new LinkedHashMap<LocalDate, Integer>();
+			for(LocalDate key : roomMap1.keySet()) {
+				roomMap.put(key, roomMap1.get(key));
+			}
+			hotel.setRoomMap(roomMap);
 			hotel.setAmenities(hotelEntity.getAmenities());
 			hotel.setHotelStatus(hotelEntity.getHotelStatus());
 			Set<VendorEntity> vendorEntities=hotelEntity.getVendors();
@@ -103,6 +116,47 @@ public class HotelDAOImpl implements HotelDAO {
 			hotel.setVendors(vendors);
 		}
 		return hotel;
+	}
+	
+	@Override
+	public Set<Hotel> toHotels(List<HotelEntity> hotelEntities) throws Exception {
+		Set<Hotel> hotels=new LinkedHashSet<Hotel>();
+		for(HotelEntity hotelEntity : hotelEntities) {
+			Hotel hotel=new Hotel();
+			hotel.setHotelId(hotelEntity.getHotelId());
+			hotel.setHotelName(hotelEntity.getHotelName());
+			hotel.setLocation(hotelEntity.getLocation());
+			hotel.setRoomCharge(hotelEntity.getRoomCharge());
+			hotel.setTotalRooms(hotelEntity.getTotalRooms());
+			Map<LocalDate, Integer> roomMap1=hotelEntity.getRoomMap();
+			Map<LocalDate, Integer> roomMap=new LinkedHashMap<LocalDate, Integer>();
+			for(LocalDate key : roomMap1.keySet()) {
+				roomMap.put(key, roomMap1.get(key));
+			}
+			hotel.setRoomMap(roomMap);
+			hotel.setAmenities(hotelEntity.getAmenities());
+			hotel.setHotelStatus(hotelEntity.getHotelStatus());
+			Set<VendorEntity> vendorEntities=hotelEntity.getVendors();
+			Set<Vendor> vendors=new LinkedHashSet<Vendor>();
+			for(VendorEntity vendorEntity : vendorEntities) {
+				Vendor vendor=new Vendor();
+				vendor.setVendorId(vendorEntity.getVendorId());
+				vendor.setVendorName(vendorEntity.getVendorName());
+				vendor.setPromoCode(vendorEntity.getPromoCode());
+				vendors.add(vendor);
+			}
+			hotel.setVendors(vendors);
+			hotels.add(hotel);
+		}
+		return hotels;
+	}
+	
+	@Override
+	public Set<Hotel> getHotels() throws Exception {
+		String queryString="SELECT h FROM HotelEntity h";
+		Query query=entityManager.createQuery(queryString);
+		List<HotelEntity> hotelEntities=query.getResultList();
+		return toHotels(hotelEntities);
 	}
 	
 	@Override
@@ -145,35 +199,7 @@ public class HotelDAOImpl implements HotelDAO {
 		return vId;
 	}
 	
-	@Override
-	public Set<Hotel> getHotels() throws Exception {
-		String queryString="SELECT h FROM HotelEntity h";
-		Query query=entityManager.createQuery(queryString);
-		List<HotelEntity> hotelEntities=query.getResultList();
-		Set<Hotel> hotels=new LinkedHashSet<Hotel>();
-		for(HotelEntity hotelEntity : hotelEntities) {
-			Hotel hotel=new Hotel();
-			hotel.setHotelId(hotelEntity.getHotelId());
-			hotel.setHotelName(hotelEntity.getHotelName());
-			hotel.setLocation(hotelEntity.getLocation());
-			hotel.setRoomCharge(hotelEntity.getRoomCharge());
-			hotel.setRoomsAvailable(hotelEntity.getRoomsAvailable());
-			hotel.setAmenities(hotelEntity.getAmenities());
-			hotel.setHotelStatus(hotelEntity.getHotelStatus());
-			Set<VendorEntity> vendorEntities=hotelEntity.getVendors();
-			Set<Vendor> vendors=new LinkedHashSet<Vendor>();
-			for(VendorEntity vendorEntity : vendorEntities) {
-				Vendor vendor=new Vendor();
-				vendor.setVendorId(vendorEntity.getVendorId());
-				vendor.setVendorName(vendorEntity.getVendorName());
-				vendor.setPromoCode(vendorEntity.getPromoCode());
-				vendors.add(vendor);
-			}
-			hotel.setVendors(vendors);
-			hotels.add(hotel);
-		}
-		return hotels;
-	}
+	
 	
 	@Override
 	public Set<Hotel> searchHotelByNameKey(String key) throws Exception {     
@@ -181,29 +207,7 @@ public class HotelDAOImpl implements HotelDAO {
 		Query query=entityManager.createQuery(queryString);
 		query.setParameter("searchKey", "%"+key+"%");
 		List<HotelEntity> hotelEntities=query.getResultList();
-		Set<Hotel> hotels=new LinkedHashSet<Hotel>();
-		for(HotelEntity hotelEntity : hotelEntities) {
-			Hotel hotel=new Hotel();
-			hotel.setHotelId(hotelEntity.getHotelId());
-			hotel.setHotelName(hotelEntity.getHotelName());
-			hotel.setLocation(hotelEntity.getLocation());
-			hotel.setRoomCharge(hotelEntity.getRoomCharge());
-			hotel.setRoomsAvailable(hotelEntity.getRoomsAvailable());
-			hotel.setAmenities(hotelEntity.getAmenities());
-			hotel.setHotelStatus(hotelEntity.getHotelStatus());
-			Set<VendorEntity> vendorEntities=hotelEntity.getVendors();
-			Set<Vendor> vendors=new LinkedHashSet<Vendor>();
-			for(VendorEntity vendorEntity : vendorEntities) {
-				Vendor vendor=new Vendor();
-				vendor.setVendorId(vendorEntity.getVendorId());
-				vendor.setVendorName(vendorEntity.getVendorName());
-				vendor.setPromoCode(vendorEntity.getPromoCode());
-				vendors.add(vendor);
-			}
-			hotel.setVendors(vendors);
-			hotels.add(hotel);
-		}
-		return hotels;
+		return toHotels(hotelEntities);
 	}
 	
 	@Override
@@ -212,29 +216,7 @@ public class HotelDAOImpl implements HotelDAO {
 		Query query=entityManager.createQuery(queryString);
 		query.setParameter("searchKey", "%"+key+"%");
 		List<HotelEntity> hotelEntities=query.getResultList();
-		Set<Hotel> hotels=new LinkedHashSet<Hotel>();
-		for(HotelEntity hotelEntity : hotelEntities) {
-			Hotel hotel=new Hotel();
-			hotel.setHotelId(hotelEntity.getHotelId());
-			hotel.setHotelName(hotelEntity.getHotelName());
-			hotel.setLocation(hotelEntity.getLocation());
-			hotel.setRoomCharge(hotelEntity.getRoomCharge());
-			hotel.setRoomsAvailable(hotelEntity.getRoomsAvailable());
-			hotel.setAmenities(hotelEntity.getAmenities());
-			hotel.setHotelStatus(hotelEntity.getHotelStatus());
-			Set<VendorEntity> vendorEntities=hotelEntity.getVendors();
-			Set<Vendor> vendors=new LinkedHashSet<Vendor>();
-			for(VendorEntity vendorEntity : vendorEntities) {
-				Vendor vendor=new Vendor();
-				vendor.setVendorId(vendorEntity.getVendorId());
-				vendor.setVendorName(vendorEntity.getVendorName());
-				vendor.setPromoCode(vendorEntity.getPromoCode());
-				vendors.add(vendor);
-			}
-			hotel.setVendors(vendors);
-			hotels.add(hotel);
-		}
-		return hotels;
+		return toHotels(hotelEntities);
 	}
 	
 	@Override
@@ -248,18 +230,27 @@ public class HotelDAOImpl implements HotelDAO {
 			booking.setHotelName(bookingEntity.getHotelName());
 			booking.setVendorId(bookingEntity.getVendorId());
 			booking.setVendorName(bookingEntity.getVendorName());
-			booking.setNoOfRooms(bookingEntity.getNoOfRooms());
+			booking.setBookingDate(bookingEntity.getBookingDate());
 			booking.setBookedOn(bookingEntity.getBookedOn());
 			booking.setAmount(bookingEntity.getAmount());
+			List<Customer> customers=new ArrayList<Customer>();
+			for(CustomerEntity cEntity : bookingEntity.getCustomers()) {
+				Customer c=new Customer();
+				c.setCustId(cEntity.getCustId());
+				c.setfName(cEntity.getfName());
+				c.setlName(cEntity.getlName());
+				customers.add(c);
+			}
+			booking.setCustomers(customers);
 		}
 		return booking;
 	}
 	
 	@Override
-	public Boolean validateBooking(String hotelId, String vendorId, Integer noOfRooms) throws Exception {
+	public Boolean validateBooking(String hotelId, String vendorId, LocalDate date, Integer noOfCustomers) throws Exception {
 		Boolean isValid=false;
 		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotelId);
-		if(hotelEntity!=null && hotelEntity.getRoomsAvailable()>=noOfRooms) {
+		if(hotelEntity!=null && hotelEntity.getRoomMap().get(date)>=noOfCustomers) {
 			VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendorId);
 			if(vendorEntity!=null && hotelEntity.getVendors().contains(vendorEntity)) {
 				isValid=true;
@@ -269,30 +260,50 @@ public class HotelDAOImpl implements HotelDAO {
 	}
 	
 	@Override
-	public Integer bookHotel(String hotelId, String vendorId, Integer noOfRooms, Double amount) throws Exception {
+	public Integer bookHotel(String hotelId, String vendorId, LocalDate date, List<Customer> customers, Double amount) throws Exception {
 		HotelEntity hotelEntity=entityManager.find(HotelEntity.class, hotelId);
 		VendorEntity vendorEntity=entityManager.find(VendorEntity.class, vendorId);
-		hotelEntity.setRoomsAvailable(hotelEntity.getRoomsAvailable()-noOfRooms);
 		BookingEntity bookingEntity=new BookingEntity();
 		bookingEntity.setHotelId(hotelEntity.getHotelId());
 		bookingEntity.setHotelName(hotelEntity.getHotelName());
-		bookingEntity.setNoOfRooms(noOfRooms);
 		bookingEntity.setVendorId(vendorEntity.getVendorId());
 		bookingEntity.setVendorName(vendorEntity.getVendorName());
+		bookingEntity.setBookingDate(date);
 		bookingEntity.setBookedOn(LocalDateTime.now());
 		bookingEntity.setAmount(amount);
+		List<CustomerEntity> cEntities=new ArrayList<CustomerEntity>();
+		for(Customer c : customers) {
+			CustomerEntity cEntity=new CustomerEntity();
+			cEntity.setfName(c.getfName());
+			cEntity.setlName(c.getlName());
+			cEntities.add(cEntity);
+		}
+		bookingEntity.setCustomers(cEntities);
 		entityManager.persist(bookingEntity);
+		Map<LocalDate, Integer> roomMap=hotelEntity.getRoomMap();
+		roomMap.put(date, roomMap.get(date)-customers.size());
+		hotelEntity.setRoomMap(roomMap);
 		return bookingEntity.getBookingId();
 	}
 	
 	@Override
-	public Integer updateBooking(Integer bookingId, Integer noOfRooms, Double amount) throws Exception {
+	public Integer updateBooking(Integer bookingId, List<Customer> customers, Double amount) throws Exception {
 		BookingEntity bookingEntity=entityManager.find(BookingEntity.class, bookingId);
 		Integer bId=null;
 		if(bookingEntity!=null) {
 			HotelEntity hotelEntity=entityManager.find(HotelEntity.class, bookingEntity.getHotelId());
-			hotelEntity.setRoomsAvailable(hotelEntity.getRoomsAvailable()+bookingEntity.getNoOfRooms()-noOfRooms);
-			bookingEntity.setNoOfRooms(noOfRooms);
+			Map<LocalDate, Integer> roomMap=hotelEntity.getRoomMap();
+			LocalDate date=bookingEntity.getBookingDate();
+			roomMap.put(date, roomMap.get(date)+bookingEntity.getCustomers().size()-customers.size());
+			hotelEntity.setRoomMap(roomMap);
+			List<CustomerEntity> cEntities=new ArrayList<CustomerEntity>();
+			for(Customer c : customers) {
+				CustomerEntity cEntity=new CustomerEntity();
+				cEntity.setfName(c.getfName());
+				cEntity.setlName(c.getlName());
+				cEntities.add(cEntity);
+			}
+			bookingEntity.setCustomers(cEntities);
 			bookingEntity.setAmount(amount);
 			bId=bookingEntity.getBookingId();
 		}
@@ -305,7 +316,10 @@ public class HotelDAOImpl implements HotelDAO {
 		Integer bId=null;
 		if(bookingEntity!=null) {
 			HotelEntity hotelEntity=entityManager.find(HotelEntity.class, bookingEntity.getHotelId());
-			hotelEntity.setRoomsAvailable(hotelEntity.getRoomsAvailable()+bookingEntity.getNoOfRooms());
+			Map<LocalDate, Integer> roomMap=hotelEntity.getRoomMap();
+			LocalDate date=bookingEntity.getBookingDate();
+			roomMap.put(date, roomMap.get(date)+bookingEntity.getCustomers().size());
+			hotelEntity.setRoomMap(roomMap);
 			entityManager.remove(bookingEntity);
 			bId=bookingEntity.getBookingId();
 		}

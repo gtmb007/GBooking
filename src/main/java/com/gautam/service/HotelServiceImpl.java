@@ -1,5 +1,8 @@
 package com.gautam.service;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gautam.dao.HotelDAO;
 import com.gautam.model.Booking;
+import com.gautam.model.Customer;
+import com.gautam.model.FinalHotel;
 import com.gautam.model.Hotel;
 import com.gautam.model.Vendor;
 
@@ -49,6 +54,13 @@ public class HotelServiceImpl implements HotelService {
 	}
 	
 	@Override
+	public Set<Hotel> getHotels() throws Exception {
+		Set<Hotel> hotels=hotelDAO.getHotels();
+		if(hotels.isEmpty()) throw new Exception("Service.HOTEL_NOT_FOUND");
+		return hotels;
+	}
+	
+	@Override
 	public String removeHotel(String hotelId) throws Exception {
 		String hId=hotelDAO.removeHotel(hotelId);
 		if(hId==null) throw new Exception("Service.HOTEL_NOT_FOUND");
@@ -70,24 +82,38 @@ public class HotelServiceImpl implements HotelService {
 	}
 	
 	@Override
-	public Set<Hotel> getHotels() throws Exception {
-		Set<Hotel> hotels=hotelDAO.getHotels();
-		if(hotels.isEmpty()) throw new Exception("Service.HOTEL_NOT_FOUND");
-		return hotels;
+	public Set<FinalHotel> toFinalHotels(Set<Hotel> hotels, LocalDate date) throws Exception {
+		Set<FinalHotel> fHotels=new HashSet<FinalHotel>(); 
+		for(Hotel hotel : hotels) {
+			FinalHotel fHotel=new FinalHotel();
+			fHotel.setHotelId(hotel.getHotelId());
+			fHotel.setHotelName(hotel.getHotelName());
+			fHotel.setLocation(hotel.getLocation());
+			fHotel.setAmenities(hotel.getAmenities());
+			fHotel.setHotelStatus(hotel.getHotelStatus());
+			fHotel.setVendors(hotel.getVendors());
+			Integer availableRooms=hotel.getRoomMap().get(date);
+			fHotel.setAvailableRooms(availableRooms);
+			Double baseAmount=hotel.getRoomCharge();
+			Double dynamicAmount=baseAmount+baseAmount*(hotel.getTotalRooms()-availableRooms)/100;
+			fHotel.setRoomCharge(dynamicAmount);
+			fHotels.add(fHotel);
+		}
+		return fHotels;
 	}
 	
 	@Override
-	public Set<Hotel> searchHotelByNameKey(String key) throws Exception {
+	public Set<FinalHotel> searchHotelByNameKey(String key, LocalDate date) throws Exception {
 		Set<Hotel> hotels=hotelDAO.searchHotelByNameKey(key);
 		if(hotels.isEmpty()) throw new Exception("Service.HOTEL_NOT_FOUND");
-		return hotels;
+		return toFinalHotels(hotels, date);
 	}
 	
 	@Override
-	public Set<Hotel> searchHotelByLocationKey(String key) throws Exception {
+	public Set<FinalHotel> searchHotelByLocationKey(String key, LocalDate date) throws Exception {
 		Set<Hotel> hotels=hotelDAO.searchHotelByLocationKey(key);
 		if(hotels.isEmpty()) throw new Exception("Service.HOTEL_NOT_FOUND");
-		return hotels;
+		return toFinalHotels(hotels, date);
 	}
 	
 	@Override
@@ -98,20 +124,20 @@ public class HotelServiceImpl implements HotelService {
 	}
 	
 	@Override
-	public Boolean validateBooking(String hotelId, String vendorId, Integer noOfRooms) throws Exception {
-		Boolean message=hotelDAO.validateBooking(hotelId, vendorId, noOfRooms);
+	public Boolean validateBooking(String hotelId, String vendorId, LocalDate date, Integer noOfCustomers) throws Exception {
+		Boolean message=hotelDAO.validateBooking(hotelId, vendorId, date, noOfCustomers);
 		if(!message) throw new Exception("Service.INVALID_BOOKING_DETAILS");
 		return message;
 	}
 	
 	@Override
-	public Integer bookHotel(String hotelId, String vendorId, Integer noOfRooms, Double amount) throws Exception {
-		return hotelDAO.bookHotel(hotelId, vendorId, noOfRooms, amount);
+	public Integer bookHotel(String hotelId, String vendorId, LocalDate date, List<Customer> customers, Double amount) throws Exception {
+		return hotelDAO.bookHotel(hotelId, vendorId, date, customers, amount);
 	}
 	
 	@Override
-	public Integer updateBooking(Integer bookingId, Integer noOfRooms, Double amount) throws Exception {
-		Integer bId=hotelDAO.updateBooking(bookingId, noOfRooms, amount);
+	public Integer updateBooking(Integer bookingId, List<Customer> customers, Double amount) throws Exception {
+		Integer bId=hotelDAO.updateBooking(bookingId, customers, amount);
 		if(bId==null) throw new Exception("Service.BOOKING_UPDATION_FAILED");
 		return bookingId;
 	}

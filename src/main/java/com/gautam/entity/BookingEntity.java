@@ -1,12 +1,17 @@
 package com.gautam.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -30,11 +35,15 @@ public class BookingEntity {
 	@Column(name="vendor_name")
 	private String vendorName;
 	
-	@Column(name="no_of_rooms")
-	private Integer noOfRooms;
+	@Column(name="booking_date")
+	private LocalDate bookingDate;
 	
 	@Column(name="booked_on")
 	private LocalDateTime bookedOn;
+	
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="booking_id")
+	private List<CustomerEntity> customers;
 	
 	@Column(name="amount")
 	private Double amount;
@@ -78,13 +87,13 @@ public class BookingEntity {
 	public void setVendorName(String vendorName) {
 		this.vendorName = vendorName;
 	}
-	
-	public Integer getNoOfRooms() {
-		return noOfRooms;
+
+	public LocalDate getBookingDate() {
+		return bookingDate;
 	}
 
-	public void setNoOfRooms(Integer noOfRooms) {
-		this.noOfRooms = noOfRooms;
+	public void setBookingDate(LocalDate bookingDate) {
+		this.bookingDate = bookingDate;
 	}
 
 	public LocalDateTime getBookedOn() {
@@ -101,6 +110,14 @@ public class BookingEntity {
 
 	public void setAmount(Double amount) {
 		this.amount = amount;
+	}
+
+	public List<CustomerEntity> getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(List<CustomerEntity> customers) {
+		this.customers = customers;
 	}
 	
 }

@@ -1,6 +1,8 @@
+SET FOREIGN_KEY_CHECKS=0;
 drop table if exists hotel_vendor;
 drop table if exists hotel;
 drop table if exists vendor;
+drop table if exists customer;
 drop table if exists booking;
 drop table if exists myuser;
 

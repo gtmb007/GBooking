@@ -1,14 +1,19 @@
 package com.gautam.entity;
 
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 
 @Entity
@@ -25,8 +30,15 @@ public class HotelEntity {
 	@Column(name="location")
 	private String location;
 	
-	@Column(name="room_available")
-	private Integer roomsAvailable;
+	@Column(name="total_rooms")
+	private Integer totalRooms;
+	
+	@ElementCollection
+//	@CollectionTable(name = "room_map", 
+//	  joinColumns = {@JoinColumn(name = "hotel_id", referencedColumnName = "hotel_id")})
+	@MapKeyColumn(name = "date")
+	@Column(name = "available_rooms")
+	private Map<LocalDate, Integer> roomMap;
 	
 	@Column(name="room_charge")
 	private Double roomCharge;
@@ -68,12 +80,20 @@ public class HotelEntity {
 		this.location = location;
 	}
 
-	public Integer getRoomsAvailable() {
-		return roomsAvailable;
+	public Integer getTotalRooms() {
+		return totalRooms;
 	}
 
-	public void setRoomsAvailable(Integer roomsAvailable) {
-		this.roomsAvailable = roomsAvailable;
+	public void setTotalRooms(Integer totalRooms) {
+		this.totalRooms = totalRooms;
+	}
+
+	public Map<LocalDate, Integer> getRoomMap() {
+		return roomMap;
+	}
+
+	public void setRoomMap(Map<LocalDate, Integer> roomMap) {
+		this.roomMap = roomMap;
 	}
 
 	public Double getRoomCharge() {

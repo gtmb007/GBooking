@@ -1,16 +1,13 @@
 package com.gautam.model;
 
-import java.time.LocalDate;
-import java.util.Map;
 import java.util.Set;
 
-public class Hotel {
-	
+public class FinalHotel {
+
 	private String hotelId;
 	private String hotelName;
 	private String location;
-	private Integer totalRooms;
-	private Map<LocalDate, Integer> roomMap;
+	private Integer availableRooms;
 	private Double roomCharge;
 	private String amenities;
 	private String hotelStatus;
@@ -34,17 +31,11 @@ public class Hotel {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	public Integer getTotalRooms() {
-		return totalRooms;
+	public Integer getAvailableRooms() {
+		return availableRooms;
 	}
-	public void setTotalRooms(Integer totalRooms) {
-		this.totalRooms = totalRooms;
-	}
-	public Map<LocalDate, Integer> getRoomMap() {
-		return roomMap;
-	}
-	public void setRoomMap(Map<LocalDate, Integer> roomMap) {
-		this.roomMap = roomMap;
+	public void setAvailableRooms(Integer availableRooms) {
+		this.availableRooms = availableRooms;
 	}
 	public Double getRoomCharge() {
 		return roomCharge;

@@ -1,6 +1,8 @@
 package com.gautam.dao;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -9,8 +11,10 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import com.gautam.entity.BookingEntity;
+import com.gautam.entity.CustomerEntity;
 import com.gautam.entity.UserEntity;
 import com.gautam.model.Booking;
+import com.gautam.model.Customer;
 import com.gautam.model.User;
 
 @Repository(value="userDAO")
@@ -57,9 +61,18 @@ public class UserDAOImpl implements UserDAO {
 				booking.setHotelName(bookingEntity.getHotelName());
 				booking.setVendorId(bookingEntity.getVendorId());
 				booking.setVendorName(bookingEntity.getVendorName());
-				booking.setNoOfRooms(bookingEntity.getNoOfRooms());
+				booking.setBookingDate(bookingEntity.getBookingDate());
 				booking.setBookedOn(bookingEntity.getBookedOn());
 				booking.setAmount(bookingEntity.getAmount());
+				List<Customer> customers=new ArrayList<Customer>();
+				for(CustomerEntity cEntity : bookingEntity.getCustomers()) {
+					Customer c=new Customer();
+					c.setCustId(cEntity.getCustId());
+					c.setfName(cEntity.getfName());
+					c.setlName(cEntity.getlName());
+					customers.add(c);
+				}
+				booking.setCustomers(customers);
 				bookings.add(booking);
 			}
 			user.setBookings(bookings);

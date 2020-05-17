@@ -1,6 +1,12 @@
 package com.gautam;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -11,6 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
 import com.gautam.model.Booking;
+import com.gautam.model.Customer;
+import com.gautam.model.FinalHotel;
 import com.gautam.model.Hotel;
 import com.gautam.model.User;
 import com.gautam.model.Vendor;
@@ -20,7 +28,7 @@ import com.gautam.service.HotelService;
 import com.gautam.service.UserService;
 
 @SpringBootApplication
-public class HotelBookingApplication  {
+public class HotelBookingApplication implements CommandLineRunner {
 
 	@Autowired
 	private HotelService hotelService;
@@ -43,17 +51,17 @@ public class HotelBookingApplication  {
 		SpringApplication.run(HotelBookingApplication.class, args);
 	}
 	
-//	@Override
-//	public void run(String... args) throws Exception {
-//		while(true) {
-//			System.out.println("\nPlease Enter...\n1.) Admin Login\n2.) User Login\n0.) Exit");
-//			int opt=sc.nextInt();
-//			if(opt==0) return;
-//			else if(opt==1) adminLogin();
-//			else if(opt==2) userLogin();
-//			else System.out.println("\n"+environment.getProperty("UI.INVALID_OPTION"));
-//		}
-//	}
+	@Override
+	public void run(String... args) throws Exception {
+		while(true) {
+			System.out.println("\nPlease Enter...\n1.) Admin Login\n2.) User Login\n0.) Exit");
+			int opt=sc.nextInt();
+			if(opt==0) return;
+			else if(opt==1) adminLogin();
+			else if(opt==2) userLogin();
+			else System.out.println("\n"+environment.getProperty("UI.INVALID_OPTION"));
+		}
+	}
 	
 	public void adminLogin() {
 		System.out.print("\nEnter Admin Id: ");
@@ -64,13 +72,13 @@ public class HotelBookingApplication  {
 			id=adminService.validateAdmin(id, password);
 			System.out.println("\n"+environment.getProperty("API.ADMIN_LOGIN_SUCCESS")+id);
 			while(true) {
-				System.out.println("\nPlease Enter...\n1.) Add Vendor\n2.) Get Vendor\n3.) Add Hotel\n4.) Get Hotel\n5.) Delete Hotel\n6.) Remove Vendor from Hotel\n7.) Add Vendor to Hotel\n0.) Log Out");
+				System.out.println("\nPlease Enter...\n1.) Add Vendor\n2.) Get Vendor\n3.) Add Hotel\n4.) Get Hotels\n5.) Delete Hotel\n6.) Remove Vendor from Hotel\n7.) Add Vendor to Hotel\n0.) Log Out");
 				int opt=sc.nextInt();
 				if(opt==0) return;
 				else if(opt==1) addVendor();
 				else if(opt==2) getVendor();
 				else if(opt==3) addHotel();
-				else if(opt==4) getHotel();
+				else if(opt==4) getHotels();
 				else if(opt==5) deleteHotel();
 				else if(opt==6) removeVendorFromHotel();
 				else if(opt==7) addVendorToHotel();
@@ -118,8 +126,15 @@ public class HotelBookingApplication  {
 		hotel.setHotelName(sc.next());
 		System.out.print("Enter Location: ");
 		hotel.setLocation(sc.next());
-		System.out.print("Enter Available Rooms: ");
-		hotel.setRoomsAvailable(sc.nextInt());
+		System.out.print("Enter Total Rooms: ");
+		int totalRooms=sc.nextInt();
+		hotel.setTotalRooms(totalRooms);
+		LocalDate today=LocalDate.now();
+		Map<LocalDate, Integer> roomMap=new LinkedHashMap<LocalDate, Integer>();
+		for(int i=0;i<365;i++) {
+			roomMap.put(today.plusDays(i), totalRooms);
+		}
+		hotel.setRoomMap(roomMap);
 		System.out.print("Enter Room Charge: ");
 		hotel.setRoomCharge(sc.nextDouble());
 		System.out.print("Enter Amenities: ");
@@ -144,26 +159,33 @@ public class HotelBookingApplication  {
 		}
 	}
 	
-	public void getHotel() {
+	public void getHotels() {
 		try {
-			System.out.print("\nEnter Hotel Id: ");
-			Hotel hotel=hotelService.getHotel(sc.next());
-			System.out.println("\nHotel Details...");
-			System.out.println("Hotel Id: "+hotel.getHotelId());
-			System.out.println("Hotel Name: "+hotel.getHotelName());
-			System.out.println("Location: "+hotel.getLocation());
-			System.out.println("Available Rooms: "+hotel.getRoomsAvailable());
-			System.out.println("Room Charge: "+hotel.getRoomCharge());
-			System.out.println("Amenities: "+hotel.getAmenities());
-			System.out.println("Status: "+hotel.getHotelStatus());
-			Set<Vendor> vendors=hotel.getVendors();
-			int i=1;
-			for(Vendor vendor : vendors) {
-				System.out.println("\nVendor"+i+"...");
-				System.out.println("Vendor Id: "+vendor.getVendorId());
-				System.out.println("Vendor Name: "+vendor.getVendorName());
-				System.out.println("Promo Code: "+vendor.getPromoCode());
-				i++;
+			Set<Hotel> hotels=hotelService.getHotels();
+			int j=1;
+			for(Hotel hotel : hotels) {
+				System.out.println("\nHotel"+j+" Details...");
+				System.out.println("Hotel Id: "+hotel.getHotelId());
+				System.out.println("Hotel Name: "+hotel.getHotelName());
+				System.out.println("Location: "+hotel.getLocation());
+				System.out.println("Total Rooms: "+hotel.getTotalRooms());
+				Map<LocalDate, Integer> roomMap=hotel.getRoomMap();
+				for(LocalDate date : roomMap.keySet()) {
+					System.out.println("Date: "+date+"\tAvailable Rooms: "+roomMap.get(date));
+				}
+				System.out.println("Room Charge: "+hotel.getRoomCharge());
+				System.out.println("Amenities: "+hotel.getAmenities());
+				System.out.println("Status: "+hotel.getHotelStatus());
+				Set<Vendor> vendors=hotel.getVendors();
+				int i=1;
+				for(Vendor vendor : vendors) {
+					System.out.println("\nVendor"+i+"...");
+					System.out.println("Vendor Id: "+vendor.getVendorId());
+					System.out.println("Vendor Name: "+vendor.getVendorName());
+					System.out.println("Promo Code: "+vendor.getPromoCode());
+					i++;
+				}
+				j++;
 			}
 		} catch(Exception e) {
 			System.out.println("\n"+environment.getProperty(e.getMessage()));
@@ -245,18 +267,17 @@ public class HotelBookingApplication  {
 			id=userService.validateUser(id, password);
 			System.out.println("\n"+environment.getProperty("API.USER_LOGIN_SUCCESS")+id);
 			while(true) {
-				System.out.println("\nPlease Enter...\n1.) User Details\n2.) Update Name\n3.) Update Password\n4.) Recharge Wallet\n5.) Search Hotel By Name\n6.) Search Hotel By Location\n7.) Book Hotel\n8.) Update Booking\n9.) Cancel Booking\n0.) Log Out");
+				System.out.println("\nPlease Enter...\n1.) User Details\n2.) Update Name\n3.) Update Password\n4.) Recharge Wallet\n5.) Search Hotel By Name & Book\n6.) Search Hotel By Location & Book\n7.) Update Booking\n8.) Cancel Booking\n0.) Log Out");
 				int opt=sc.nextInt();
 				if(opt==0) return;
 				else if(opt==1) userDetails(id);
 				else if(opt==2) updateName(id);
 				else if(opt==3) updatePassword(id);
 				else if(opt==4) rechargeWallet(id);
-				else if(opt==5) searchHotelByName();
-				else if(opt==6) searchHotelByLocation();
-				else if(opt==7) bookHotel(id);
-				else if(opt==8) updateBooking(id);
-				else if(opt==9) cancelBooking(id);
+				else if(opt==5) searchHotelByName(id);
+				else if(opt==6) searchHotelByLocation(id);
+				else if(opt==7) updateBooking(id);
+				else if(opt==8) cancelBooking(id);
 				else System.out.println("\n"+environment.getProperty("UI.INVALID_OPTION"));
 			}
 		} catch(Exception e) {
@@ -280,9 +301,14 @@ public class HotelBookingApplication  {
 				System.out.println("Hotel Name: "+booking.getHotelName());
 				System.out.println("Vendor Id: "+booking.getVendorId());
 				System.out.println("Vendor Name: "+booking.getVendorName());
-				System.out.println("Number of Rooms: "+booking.getNoOfRooms());
+				System.out.println("Booking Date: "+booking.getBookingDate());
 				System.out.println("Booking Date: "+booking.getBookedOn());
 				System.out.println("Booking Amount: "+booking.getAmount());
+				int j=1;
+				for(Customer customer : booking.getCustomers()) {
+					System.out.println("Customer"+j+" Name: "+customer.getfName()+" "+customer.getlName());
+					j++;
+				}
 				i++;
 			}
 		} catch(Exception e) {
@@ -325,90 +351,100 @@ public class HotelBookingApplication  {
 		}
 	}
 	
-	public void searchHotelByName() {
+	public void searchHotelByName(String userId) {
 		try {
 			System.out.print("\nEnter Name Key of Hotel: ");
 			String key=sc.next();
-			Set<Hotel> hotels=hotelService.searchHotelByNameKey(key);
-			int j=1;
-			for(Hotel hotel : hotels) {
-				System.out.println("\n\nHotel"+j+" Details...");
-				System.out.println("Hotel Id: "+hotel.getHotelId());
-				System.out.println("Hotel Name: "+hotel.getHotelName());
-				System.out.println("Location: "+hotel.getLocation());
-				System.out.println("Available Rooms: "+hotel.getRoomsAvailable());
-				System.out.println("Room Charge: "+hotel.getRoomCharge());
-				System.out.println("Amenities: "+hotel.getAmenities());
-				System.out.println("Status: "+hotel.getHotelStatus());
-				Set<Vendor> vendors=hotel.getVendors();
-				int i=1;
-				for(Vendor vendor : vendors) {
-					System.out.println("\nVendor"+i+"...");
-					System.out.println("Vendor Id: "+vendor.getVendorId());
-					System.out.println("Vendor Name: "+vendor.getVendorName());
-					System.out.println("Promo Code: "+vendor.getPromoCode());
-					i++;
-				}
-				j++;
-			}
+			System.out.print("Enter Date of Booking: ");
+			String s=sc.next();
+			DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yy");
+			LocalDate date= LocalDate.parse(s, formatter);
+			Set<FinalHotel> hotels=hotelService.searchHotelByNameKey(key, date);
+			printAndBook(hotels, userId, date);
 		} catch(Exception e) {
 			System.out.println("\n"+environment.getProperty(e.getMessage()));
 		}
 	}
 	
-	public void searchHotelByLocation() {
+	public void searchHotelByLocation(String userId) {
 		try {
 			System.out.print("\nEnter Location Key of Hotel: ");
 			String key=sc.next();
-			Set<Hotel> hotels=hotelService.searchHotelByLocationKey(key);
-			int j=1;
-			for(Hotel hotel : hotels) {
-				System.out.println("\n\nHotel"+j+" Details...");
-				System.out.println("Hotel Id: "+hotel.getHotelId());
-				System.out.println("Hotel Name: "+hotel.getHotelName());
-				System.out.println("Location: "+hotel.getLocation());
-				System.out.println("Available Rooms: "+hotel.getRoomsAvailable());
-				System.out.println("Room Charge: "+hotel.getRoomCharge());
-				System.out.println("Amenities: "+hotel.getAmenities());
-				System.out.println("Status: "+hotel.getHotelStatus());
-				Set<Vendor> vendors=hotel.getVendors();
-				int i=1;
-				for(Vendor vendor : vendors) {
-					System.out.println("\nVendor"+i+"...");
-					System.out.println("Vendor Id: "+vendor.getVendorId());
-					System.out.println("Vendor Name: "+vendor.getVendorName());
-					System.out.println("Promo Code: "+vendor.getPromoCode());
-					i++;
-				}
-				j++;
-			}
+			System.out.print("Enter Date of Booking: ");
+			String s=sc.next();
+			DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yy");
+			LocalDate date= LocalDate.parse(s, formatter);
+			Set<FinalHotel> hotels=hotelService.searchHotelByLocationKey(key, date);
+			printAndBook(hotels, userId, date);
 		} catch(Exception e) {
 			System.out.println("\n"+environment.getProperty(e.getMessage()));
 		}
 	}
 	
-	public void bookHotel(String userId) {
-		System.out.print("\nEnter Hotel Id: ");
-		String hotelId=sc.next();
-		System.out.print("Enter Vendor Id: ");
-		String vendorId=sc.next();
-		System.out.print("Enter Number of Rooms: ");
-		Integer noOfRooms=sc.nextInt();
-		try {
-			Integer bookingId=bookingService.bookHotel(userId, hotelId, vendorId, noOfRooms);
-			System.out.println("\n"+environment.getProperty("API.BOOKING_SUCCESS")+bookingId);
-		} catch(Exception e) {
-			System.out.println("\n"+environment.getProperty(e.getMessage()));
+	public void printAndBook(Set<FinalHotel> hotels, String userId, LocalDate date) throws Exception {
+		int j=1;
+		for(FinalHotel hotel : hotels) {
+			System.out.println("\n\nHotel"+j+" Details...");
+			System.out.println("Hotel Id: "+hotel.getHotelId());
+			System.out.println("Hotel Name: "+hotel.getHotelName());
+			System.out.println("Location: "+hotel.getLocation());
+			System.out.println("Available Rooms: "+hotel.getAvailableRooms());
+			System.out.println("Room Charge: "+hotel.getRoomCharge());
+			System.out.println("Amenities: "+hotel.getAmenities());
+			System.out.println("Status: "+hotel.getHotelStatus());
+			Set<Vendor> vendors=hotel.getVendors();
+			int i=1;
+			for(Vendor vendor : vendors) {
+				System.out.println("\nVendor"+i+"...");
+				System.out.println("Vendor Id: "+vendor.getVendorId());
+				System.out.println("Vendor Name: "+vendor.getVendorName());
+				System.out.println("Promo Code: "+vendor.getPromoCode());
+				i++;
+			}
+			j++;
+		}
+		if(!hotels.isEmpty()) {
+			System.out.print("\nEnter Hotel Id: ");
+			String hotelId=sc.next();
+			System.out.print("Enter Vendor Id: ");
+			String vendorId=sc.next();
+			System.out.print("Enter Number of Customers: ");
+			Integer n=sc.nextInt();
+			List<Customer> customers=new ArrayList<Customer>();
+			for(int i=1;i<=n;i++) {
+				Customer customer=new Customer();
+				System.out.print("Enter Customer"+i+" First Name: ");
+				customer.setfName(sc.next());
+				System.out.print("Enter Customer"+i+" Last Name: ");
+				customer.setlName(sc.next());
+				customers.add(customer);
+			}
+			for(FinalHotel fHotel : hotels) {
+				if(fHotel.getHotelId().equals(hotelId)) {
+					Integer bookingId=bookingService.bookHotel(userId, fHotel, vendorId, date, customers);
+					System.out.println("\n"+environment.getProperty("API.BOOKING_SUCCESS")+bookingId);
+					break;
+				}
+			}
 		}
 	}
 	
 	public void updateBooking(String userId) {
 		System.out.print("\nEnter Booking Id: ");
 		Integer bookingId=sc.nextInt();
-		System.out.print("Enter Number of Rooms: ");
-		Integer noOfRooms=sc.nextInt();
+		System.out.print("Enter Number of Customers: ");
+		Integer n=sc.nextInt();
+		List<Customer> customers=new ArrayList<Customer>();
+		for(int i=1;i<=n;i++) {
+			Customer customer=new Customer();
+			System.out.print("Enter Customer"+i+" First Name: ");
+			customer.setfName(sc.next());
+			System.out.print("Enter Customer"+i+" Last Name: ");
+			customer.setlName(sc.next());
+			customers.add(customer);
+		}
 		try {
-			bookingId=bookingService.updateBooking(userId, bookingId, noOfRooms);
+			bookingId=bookingService.updateBooking(userId, bookingId, customers);
 			System.out.println("\n"+environment.getProperty("API.BOOKING_UPDATED")+bookingId);
 		} catch(Exception e) {
 			System.out.println("\n"+environment.getProperty(e.getMessage()));

@@ -1,6 +1,8 @@
 package com.gautam.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Booking {
 
@@ -9,9 +11,10 @@ public class Booking {
 	private String hotelName;
 	private String vendorId;
 	private String vendorName;
-	private Integer noOfRooms;
+	private LocalDate bookingDate;
 	private LocalDateTime bookedOn;
 	private Double amount;
+	private List<Customer> customers;
 	
 	public Integer getBookingId() {
 		return bookingId;
@@ -43,11 +46,11 @@ public class Booking {
 	public void setVendorName(String vendorName) {
 		this.vendorName = vendorName;
 	}
-	public Integer getNoOfRooms() {
-		return noOfRooms;
+	public LocalDate getBookingDate() {
+		return bookingDate;
 	}
-	public void setNoOfRooms(Integer noOfRooms) {
-		this.noOfRooms = noOfRooms;
+	public void setBookingDate(LocalDate bookingDate) {
+		this.bookingDate = bookingDate;
 	}
 	public LocalDateTime getBookedOn() {
 		return bookedOn;
@@ -60,6 +63,12 @@ public class Booking {
 	}
 	public void setAmount(Double amount) {
 		this.amount = amount;
+	}
+	public List<Customer> getCustomers() {
+		return customers;
+	}
+	public void setCustomers(List<Customer> customers) {
+		this.customers = customers;
 	}
 	
 }
