@@ -16,8 +16,8 @@ public class AdminDAOImpl implements AdminDAO {
 	
 	private Map<String, String> admins=new HashMap<String, String>() {
 		{
-			put("gtmb007", "gtmb@1998");
-			put("gangaa", "ganga@1997");
+			put("gtmb007", "12345");
+			put("gautam", "12345");
 		}
 	};
 	
